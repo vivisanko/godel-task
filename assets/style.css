@@ -49,7 +49,7 @@ body {
     align-items: center;
 
     transition-property: top, left, transform;
-    transition-duration: 0.5s, 0.5s, 0.4s;
+    transition-duration: 5s, 5s, 1s;
     transition-delay: 0.3s, 0.3s, 0.1s;
 }
 
@@ -57,5 +57,5 @@ body {
 .personImg{
     max-height: 80%;
     width: 70%;
-    /* transform: rotate(135deg); */
+    /* transform: rotate(90deg); */
 }
