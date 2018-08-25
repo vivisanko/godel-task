@@ -6,31 +6,31 @@ function task() {
     const stepSize = 1;
     const itemsCount = boxSize**2;
     const box = document.getElementById('box');
-
-    const start = 2;
-    let current = start;
     const person = document.getElementById('person');
+    const start = 2;
+    const setupKeys = 
+    {ArrowRight: +stepSize,
+     ArrowLeft:-stepSize,
+     ArrowDown: +boxSize,
+     ArrowUp: -boxSize,
+    }
+
+    let current = start;
+    let lastStep = "ArrowDown";
+    let currentStep = '';
+    let rotate = 0;
+ 
   
-  function determineBoxSizes(){
+    function determineBoxSizes(){
     let wrapper = document.getElementsByClassName("wrapper")[0];
     let html = document.getElementsByTagName("html")[0];
-    console.log('html',html);
     
     let width = wrapper.clientWidth;
     let height = wrapper.clientHeight;
     let units = (Math.min(width,height)===height)? "vh":"vw";
        html.style.setProperty(`--area-size`, `80${units}`);
        html.style.setProperty(`--cell-size`, `${80/boxSize}${units}`);
-
-    
-    console.log('wrapper.clientWidth',width);
-    console.log('wrapper.clientHeight',height);
-    console.log('initialSize',units);
-    // console.log('initialSize',initialSize);
-
-
-    
-  }
+    }
 
   function  createBox() {
       determineBoxSizes();
@@ -42,19 +42,37 @@ function task() {
       box.className="itemBox"};
     };
 
-    function rotatePerson(step){
-     console.log('поворачиваемся', step);
-     if(step<0){
-         person.style.transform = `rotate(${Math.abs(step)===1 ? 90 : 180}deg)`;
-     } else {
-        person.style.transform = `rotate(${Math.abs(step)===1 ? -90 : 0}deg)`;        
-     }
-
+    function rotatePerson(){
+     console.log('поворачиваемся');
+     
+        let angleOfRotation = () => {
+            if(lastStep === currentStep){
+                return 0;
+            }
+            if(Math.abs(setupKeys[lastStep]) === Math.abs(setupKeys[currentStep])) {
+                return 180
+            } 
+            let arr= ["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","ArrowRight"];
+            let prevInd = arr.findIndex((el,index) => el === lastStep);
+            console.log('часовая стрелка',prevInd);
+            const isClockwise = arr[prevInd+1] === currentStep;
+            console.log('isClockwise',isClockwise);
+            
+            return isClockwise ? 90 : -90;
+        }
+        console.log('angleOfRotation',angleOfRotation());       
+        rotate+=angleOfRotation();
+        person.style.transform = `rotate(${rotate}deg)`;
+        lastStep = currentStep;
+        
     }
+
+    
+
     function startMove(newCurrent){
      console.log('переместиться');
      current = newCurrent;
-     findPosition(newCurrent, person);
+     findPositionMutableEl(newCurrent, person);
 
     }
 
@@ -82,19 +100,15 @@ function task() {
     function go(event){
         console.log('event',event);
         console.log('event.key',event.key);
-        let setupKeys = 
-        {ArrowRight: +stepSize,
-         ArrowLeft:-stepSize,
-         ArrowDown: +boxSize,
-         ArrowUp: -boxSize,
-        }
+       
         if(Object.keys(setupKeys).includes(event.key)){
          let step = setupKeys[event.key];
+         currentStep = event.key;
          checkDirection(step);
         }
     }
 
-    function findPosition(elemId, mutable){
+    function findPositionMutableEl(elemId, mutable){
     let elem = document.getElementById(elemId);
     let position = elem.getBoundingClientRect();
     mutable.style.left = `${position.left}px`;
@@ -110,7 +124,7 @@ function task() {
     // person.addEventListener("transitionend", function () {
     //     console.log('переход закончен');
     // })
-    findPosition(start, person);
+    findPositionMutableEl(start, person);
 }
 
 task();
