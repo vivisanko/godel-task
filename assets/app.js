@@ -43,7 +43,6 @@ function task() {
     };
 
     function rotatePerson(){
-     console.log('поворачиваемся');
      
         let angleOfRotation = () => {
             if(lastStep === currentStep){
@@ -54,23 +53,17 @@ function task() {
             } 
             let arr= ["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","ArrowRight"];
             let prevInd = arr.findIndex((el,index) => el === lastStep);
-            console.log('часовая стрелка',prevInd);
-            const isClockwise = arr[prevInd+1] === currentStep;
-            console.log('isClockwise',isClockwise);
-            
+            const isClockwise = arr[prevInd+1] === currentStep;            
             return isClockwise ? 90 : -90;
         }
-        console.log('angleOfRotation',angleOfRotation());       
         rotate+=angleOfRotation();
         person.style.transform = `rotate(${rotate}deg)`;
         lastStep = currentStep;
         
     }
 
-    
 
     function startMove(newCurrent){
-     console.log('переместиться');
      current = newCurrent;
      findPositionMutableEl(newCurrent, person);
 
@@ -92,15 +85,12 @@ function task() {
         return
     } 
 
-     startMove(sum);
      rotatePerson(step);
+     startMove(sum);
     }
     
 
     function go(event){
-        console.log('event',event);
-        console.log('event.key',event.key);
-       
         if(Object.keys(setupKeys).includes(event.key)){
          let step = setupKeys[event.key];
          currentStep = event.key;
@@ -119,11 +109,7 @@ function task() {
 
    
     createBox();
-    
     addEventListener("keydown", (event)=>go(event));
-    // person.addEventListener("transitionend", function () {
-    //     console.log('переход закончен');
-    // })
     findPositionMutableEl(start, person);
 }
 
